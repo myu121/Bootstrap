@@ -36,9 +36,9 @@ output<-foreach(i = 1:MC_num,.combine = append, .packages = c("boot","quantreg")
     Per.b0 =  as.numeric(quantile(boot.out$t[1,],c(0.05,0.95))),
     Per.b1 =  as.numeric(quantile(boot.out$t[2,],c(0.05,0.95))),
     Per.b2 =  as.numeric(quantile(boot.out$t[3,],c(0.05,0.95))),
-    Boot.t.b0 = boot.ci(boot.out,type="stud",index=c(1,4))$student[4:5],
-    Boot.t.b1 = boot.ci(boot.out,type="stud",index=c(2,5))$student[4:5],
-    Boot.t.b2 = boot.ci(boot.out,type="stud",index=c(3,6))$student[4:5]
+    Boot.t.b0 = boot.ci(boot.out,type="stud",index=c(1,4),conf = 0.9)$student[4:5],
+    Boot.t.b1 = boot.ci(boot.out,type="stud",index=c(2,5),conf = 0.9)$student[4:5],
+    Boot.t.b2 = boot.ci(boot.out,type="stud",index=c(3,6),conf = 0.9)$student[4:5]
   )
   par_results <- list(par_results)
   names(par_results) <- paste0("step_", i)
