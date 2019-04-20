@@ -16,7 +16,7 @@ qreg_fun <- function(df,ind){
   return(c(boot_coef,boot_se))
 }
 tic("Paired Bootstrap")
-output<-foreach(i = 1:MC_num,.combine = append, .packages = c("boot","quantreg")) %dopar%{
+output<-foreach(i = 1:MC_num,.combine = append, .packages = c("parallel","doParallel","boot","quantreg")) %dopar%{
   x1 <- rlnorm(n)
   x2 <- c(rep(1,n*0.8),rep(0,n*0.2))
   y <- numeric(n)
