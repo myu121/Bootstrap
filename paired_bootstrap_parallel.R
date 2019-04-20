@@ -1,6 +1,7 @@
 library(foreach)
 library(parallel)
 library(doParallel)
+library(tictoc)
 set.seed(793)
 cl <-makeCluster(detectCores())
 registerDoParallel(cl)
