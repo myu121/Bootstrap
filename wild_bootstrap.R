@@ -77,6 +77,7 @@ for (L in 1:M){
 #Average Length
 apply(Length,2,mean)
 #Coverage Probability
+
 length(which((L_Beta[,1]<1)&(U_Beta[,1]>1)))/M
 length(which((L_Beta[,2]<1)&(U_Beta[,2]>1)))/M
 length(which((L_Beta[,3]<1)&(U_Beta[,3]>1)))/M
@@ -84,4 +85,5 @@ length(which((L_Beta[,3]<1)&(U_Beta[,3]>1)))/M
 #library(boot)
 #fit=boot.rq(X,y,tau=0.5,R=1000,bsmethod="wild")
 #summary(fit,se="boot")
+
 
