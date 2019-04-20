@@ -14,12 +14,6 @@ qreg_fun <- function(df,ind){
   boot_se = as.numeric(fit$coefficients[,2])
   return(c(boot_coef,boot_se))
 }
-MC.ci.b0 <- matrix(0,ncol=2,nrow=MC_num)
-MC.ci.b1 <- matrix(0,ncol=2,nrow=MC_num)
-MC.ci.b2 <- matrix(0,ncol=2,nrow=MC_num)
-MC.per.b0 <- matrix(0,ncol=2,nrow=MC_num)
-MC.per.b1 <- matrix(0,ncol=2,nrow=MC_num)
-MC.per.b2 <- matrix(0,ncol=2,nrow=MC_num)
 tic("Paired Bootstrap")
 output<-foreach(i = 1:MC_num,.combine = append, .packages = c("boot","quantreg")) %dopar%{
   x1 <- rlnorm(n)
