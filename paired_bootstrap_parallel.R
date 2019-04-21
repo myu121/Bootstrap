@@ -76,7 +76,7 @@ for(i in 1:6){
 ave.length.out = colMeans(length.out)
 sd.length.out = apply(length.out,2,sd)
 summary.out = rbind(ave.length.out,sd.length.out)
-cat("The means and standard deviations of the 90% confidence intervals are:","\n")
 colnames(summary.out)=c("NP.b0","NP.b1","NP.b2","BT.b0","BT.b1","BT.b2")
 rownames(summary.out)=c("Average","SD")
+cat("The means and standard deviations of the 90% confidence intervals are:","\n")
 summary.out
