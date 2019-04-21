@@ -28,9 +28,9 @@ output<-foreach(i = 1:MC_num,.combine = append, .packages = c("parallel","doPara
   boot.out <- boot(data=boot_df,qreg_fun,R=999,parallel = "multicore",ncpus=detectCores())
   options(warn=0)
   par_results <- list(
-    Per.b0 =  as.numeric(quantile(boot.out$t[1,],c(0.05,0.95))),
-    Per.b1 =  as.numeric(quantile(boot.out$t[2,],c(0.05,0.95))),
-    Per.b2 =  as.numeric(quantile(boot.out$t[3,],c(0.05,0.95))),
+    Per.b0 =  as.numeric(quantile(boot.out$t[,1],c(0.05,0.95))),
+    Per.b1 =  as.numeric(quantile(boot.out$t[,2],c(0.05,0.95))),
+    Per.b2 =  as.numeric(quantile(boot.out$t[,3],c(0.05,0.95))),
     Boot.t.b0 = boot.ci(boot.out,type="stud",index=c(1,4),conf = 0.9)$student[4:5],
     Boot.t.b1 = boot.ci(boot.out,type="stud",index=c(2,5),conf = 0.9)$student[4:5],
     Boot.t.b2 = boot.ci(boot.out,type="stud",index=c(3,6),conf = 0.9)$student[4:5]
@@ -53,4 +53,22 @@ for(i in 1:MC_num){
   if((output[[i]]$Boot.t.b2[1]<beta[3])&&(output[[i]]$Boot.t.b2[2]>beta[3])) coverage.prob[6]=coverage.prob[6]+1
 }
 coverage.prob/MC_num
-
+ci.length = matrix(0,ncol=2,nrow=6)
+colnames(ci.length) <- c("5%","95%")
+for(i in 1:MC_num){
+  ci.length[1,1] = ci.length[1,1]+output[[i]]$Per.b0[1]
+  ci.length[1,2] = ci.length[1,2]+output[[i]]$Per.b0[2]
+  ci.length[2,1] = ci.length[2,1]+output[[i]]$Per.b1[1]
+  ci.length[2,2] = ci.length[2,2]+output[[i]]$Per.b1[2]
+  ci.length[3,1] = ci.length[3,1]+output[[i]]$Per.b2[1]
+  ci.length[3,2] = ci.length[3,2]+output[[i]]$Per.b2[2]
+  ci.length[4,1] = ci.length[4,1]+output[[i]]$Boot.t.b0[1]
+  ci.length[4,2] = ci.length[4,2]+output[[i]]$Boot.t.b0[2]
+  ci.length[5,1] = ci.length[5,1]+output[[i]]$Boot.t.b1[1]
+  ci.length[5,2] = ci.length[5,2]+output[[i]]$Boot.t.b1[2]
+  ci.length[6,1] = ci.length[6,1]+output[[i]]$Boot.t.b2[1]
+  ci.length[6,2] = ci.length[6,2]+output[[i]]$Boot.t.b2[2]
+}
+ci.length = ci.length/MC_num
+ave.length = ci.length[,2]-ci.length[,1]
+names(ave.length) = names(coverage.prob)
