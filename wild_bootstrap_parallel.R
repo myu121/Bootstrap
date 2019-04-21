@@ -13,7 +13,7 @@ finv=function(u){
   return(w)
 }
 
-M=10000         #MC-samples
+M=10000       #MC-samples
 B=1000        #Bootstrap replicates
 n=100         #sample size
 tau=0.5       #quantile level
