@@ -1,7 +1,7 @@
 library(boot)
 library(quantreg)
 set.seed(793)
-MC_num = 10
+MC_num = 10000
 n = 100
 boot_num = 1000
 beta <- c(1,1,1)
