@@ -100,14 +100,14 @@ for (i in 1:M){
 
 #Average Length and Coverage Probability for percentile CI
 apply(Per.Length,2,mean)
-apply(Per.Length,2,sd)
+apply(Per.Length,2,sd)/sqrt(M)
 length(which((Per.L[,1]<beta[1])&(Per.U[,1]>beta[1])))/M
 length(which((Per.L[,2]<beta[2])&(Per.U[,2]>beta[2])))/M
 length(which((Per.L[,3]<beta[3])&(Per.U[,3]>beta[3])))/M
 
 #Average Length and Coverage Probability for bootstrap-t CI
 apply(Bt.Length,2,mean)
-apply(Bt.Length,2,sd)
+apply(Bt.Length,2,sd)/sqrt(M)
 length(which((Bt.L[,1]<beta[1])&(Bt.U[,1]>beta[1])))/M
 length(which((Bt.L[,2]<beta[2])&(Bt.U[,2]>beta[2])))/M
 length(which((Bt.L[,3]<beta[3])&(Bt.U[,3]>beta[3])))/M
