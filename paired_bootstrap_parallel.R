@@ -72,3 +72,4 @@ for(i in 1:MC_num){
 ci.length = ci.length/MC_num
 ave.length = ci.length[,2]-ci.length[,1]
 names(ave.length) = names(coverage.prob)
+ave.length
