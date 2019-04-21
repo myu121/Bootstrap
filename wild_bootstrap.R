@@ -1,7 +1,5 @@
 library(quantreg)
-
 set.seed(793)
-
 
 #Probability Integral Transform for weight distribution
 finv=function(u){
@@ -14,42 +12,43 @@ finv=function(u){
   return(w)
 }
 
+M=100         #MC-samples
+B=1000        #Bootstrap replicates
+n=100         #sample size
+tau=0.5       #quantile level
+alpha=0.1     #1 minus theoretical coverage probability
+beta=c(1,1,1) #true parameter
 
 Beta_hat={}
 SD={}
-Length={}
-L_Beta={}
-U_Beta={}
-tau=0.5
-alpha=0.1
-M=10000
+Per.Length={}
+Per.L={}
+Per.U={}
+Bt.Length={}
+Bt.L={}
+Bt.U={}
 
 #Replicate
 for (L in 1:M){
   #Date generate
-  n=100
   x0=rep(1,n)
   x1=rlnorm(n,meanlog=0,sdlog=1)
   x2=c(rep(1, n*0.8),rep(0, n*0.2))
   X=cbind(x0,x1,x2)
   epsilon=rt(n, df=3)
-  beta=c(1,1,1)
   y=beta[1]+beta[2]*x1+beta[3]*x2+3^(-0.5)*(2+(1+(x1-8)^2+x2)/10)*epsilon
   fit=rq(y~x1+x2, tau=0.5)
   beta_hat=fit$coefficients
   Beta_hat=rbind(Beta_hat,beta_hat)
   ehat=y-X%*%beta_hat
+  
+  #correction for ehat
   fhat_0=akj(ehat,0)$dens
-  H={}
-  for(i in 1:n){
-    hi=(X[i,]%*%solve(t(X)%*%X))%*%X[i,]
-    H=c(H,hi)
-    }
+  H=diag(X%*%solve(t(X)%*%X)%*%t(X))
   Phi=tau-(ehat<0)
   ehat=ehat+1/fhat_0*H*Phi
   
   #Wild Bootstrap
-  B=1000
   Beta_star={}
   Z_B={}
   
@@ -61,45 +60,41 @@ for (L in 1:M){
     fit_star=rq(ystar~x1+x2, tau=0.5)
     beta_star=fit_star$coefficients
     Beta_star=rbind(Beta_star, beta_star)
-    #a=summary(fit_star, se="nid")
-    #se_b=a$coefficients[,2]
-    #z_b=(beta_star-beta_hat)/se_b
-    #Z_B=rbind(Z_B,z_b)
+    se_b=summary(fit_star, se="nid")$coefficients[,2]
+    z_b=(beta_star-beta_hat)/se_b
+    Z_B=rbind(Z_B,z_b)
   }
-  #q_u=apply(Z_B,2,quantile,probs=alpha/2)
-  #q_l=apply(Z_B,2,quantile,probs=1-alpha/2)
+  
+  #compute standard error
   sd=apply(Beta_star,2,sd)
+  #compute percentile CI and length
+  q_u=apply(Z_B,2,quantile,probs=alpha/2)
+  q_l=apply(Z_B,2,quantile,probs=1-alpha/2)
+  per.L=beta_hat-q_l*sd
+  per.U=beta_hat-q_u*sd
+  per.length=(q_l-q_u)*sd
+  #compute bootstrap-t CI and length
+  bt.U=apply(Beta_star,2,quantile,probs=1-alpha/2)
+  bt.L=apply(Beta_star,2,quantile,probs=alpha/2)
+  bt.length=bt.U-bt.L
+  #bind results
   SD=rbind(SD,sd)
-  #CI Length
-  #length=(q_l-q_u)*sd
-  #length=2*qnorm(1-alpha/2)*sd
-  length=apply(Beta_star,2,quantile,probs=1-alpha/2)-apply(Beta_star,2,quantile,probs=alpha/2)
-  Length=rbind(Length,length)
-  
-  #Construct Confidence Interval
-  
-  U_beta=apply(Beta_star,2,quantile,probs=1-alpha/2)
-  L_beta=apply(Beta_star,2,quantile,probs=alpha/2)
-  #L_beta=beta_hat-q_l*sd
-  #U_beta=beta_hat-q_u*sd
-  #L_beta=beta_hat-0.5*length
-  #U_beta=beta_hat+0.5*length
-  L_Beta=rbind(L_Beta,L_beta)
-  U_Beta=rbind(U_Beta,U_beta)
+  Per.Length=rbind(Per.Length,per.length)
+  Per.L=rbind(Per.L,per.L)
+  Per.U=rbind(Per.U,per.U)
+  Bt.Length=rbind(Bt.Length,bt.length)
+  Bt.L=rbind(Bt.L,bt.L)
+  Bt.U=rbind(Bt.U,bt.U)
 }
 
-#Average Length
-apply(Length,2,mean)
-#Coverage Probability
+#Average Length and Coverage Probability for percentile CI
+apply(Per.Length,2,mean)
+length(which((Per.L[,1]<beta[1])&(Per.U[,1]>beta[1])))/M
+length(which((Per.L[,2]<beta[2])&(Per.U[,2]>beta[2])))/M
+length(which((Per.L[,3]<beta[3])&(Per.U[,3]>beta[3])))/M
 
-length(which((L_Beta[,1]<1)&(U_Beta[,1]>1)))/M
-length(which((L_Beta[,2]<1)&(U_Beta[,2]>1)))/M
-length(which((L_Beta[,3]<1)&(U_Beta[,3]>1)))/M
-
-
-
-#library(boot)
-#fit=boot.rq(X,y,tau=0.5,R=1000,bsmethod="wild")
-#summary(fit,se="boot")
-
-
+#Average Length and Coverage Probability for bootstrap-t CI
+apply(Bt.Length,2,mean)
+length(which((Bt.L[,1]<beta[1])&(Bt.U[,1]>beta[1])))/M
+length(which((Bt.L[,2]<beta[2])&(Bt.U[,2]>beta[2])))/M
+length(which((Bt.L[,3]<beta[3])&(Bt.U[,3]>beta[3])))/M
