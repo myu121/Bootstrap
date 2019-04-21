@@ -103,19 +103,19 @@ n_wild_bootstrap=function(n){
   
   #Average Length and Coverage Probability for percentile CI
   cat("sample size = ", n, "\n", "Percentile CI", "\n")
-  apply(Per.Length,2,mean)
-  apply(Per.Length,2,sd)/sqrt(M)
-  length(which((Per.L[,1]<beta[1])&(Per.U[,1]>beta[1])))/M
-  length(which((Per.L[,2]<beta[2])&(Per.U[,2]>beta[2])))/M
-  length(which((Per.L[,3]<beta[3])&(Per.U[,3]>beta[3])))/M
+  print(apply(Per.Length,2,mean))
+  print(apply(Per.Length,2,sd)/sqrt(M))
+  print(length(which((Per.L[,1]<beta[1])&(Per.U[,1]>beta[1])))/M)
+  print(length(which((Per.L[,2]<beta[2])&(Per.U[,2]>beta[2])))/M)
+  print(length(which((Per.L[,3]<beta[3])&(Per.U[,3]>beta[3])))/M)
   
   #Average Length and Coverage Probability for bootstrap-t CI
   cat("Bootstrap-t CI", "\n")
-  apply(Bt.Length,2,mean)
-  apply(Bt.Length,2,sd)/sqrt(M)
-  length(which((Bt.L[,1]<beta[1])&(Bt.U[,1]>beta[1])))/M
-  length(which((Bt.L[,2]<beta[2])&(Bt.U[,2]>beta[2])))/M
-  length(which((Bt.L[,3]<beta[3])&(Bt.U[,3]>beta[3])))/M
+  print(apply(Bt.Length,2,mean))
+  print(apply(Bt.Length,2,sd)/sqrt(M))
+  print(length(which((Bt.L[,1]<beta[1])&(Bt.U[,1]>beta[1])))/M)
+  print(length(which((Bt.L[,2]<beta[2])&(Bt.U[,2]>beta[2])))/M)
+  print(length(which((Bt.L[,3]<beta[3])&(Bt.U[,3]>beta[3])))/M)
   
   #Save estimated standard error
   write.csv(SD, file= paste(n, "SE_for_wild_bootstrap_parallel.csv", sep="_"))
@@ -124,7 +124,7 @@ n_wild_bootstrap=function(n){
 
 
 #Outer Parallel Computing
-cl=makeCluster(detectCores()-1)
+cl=makeCluster(detectCores()-1, outfile="")
 registerDoParallel(cl)
 foreach(n = c(100,200,400,800,1600,3200,5000),.options.RNG=793, .packages = c("doRNG","foreach","doParallel","quantreg")) %dorng% n_wild_bootstrap(n)
 stopCluster(cl)
