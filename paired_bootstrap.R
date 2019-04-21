@@ -30,9 +30,9 @@ for(i in 1:MC_num){
   options(warn=-1)
   boot.out <- boot(data=boot_df,qreg_fun,R=999)
   options(warn=0)
-  MC.per.b0[i,] <- as.numeric(quantile(boot.out$t[1,],c(0.05,0.95)))
-  MC.per.b1[i,] <- as.numeric(quantile(boot.out$t[2,],c(0.05,0.95)))
-  MC.per.b2[i,] <- as.numeric(quantile(boot.out$t[3,],c(0.05,0.95)))
+  MC.per.b0[i,] <- as.numeric(quantile(boot.out$t[,1],c(0.05,0.95)))
+  MC.per.b1[i,] <- as.numeric(quantile(boot.out$t[,2],c(0.05,0.95)))
+  MC.per.b2[i,] <- as.numeric(quantile(boot.out$t[,3],c(0.05,0.95)))
   MC.ci.b0[i,] <- boot.ci(boot.out,type="stud",index=c(1,4))$student[4:5]
   MC.ci.b1[i,] <- boot.ci(boot.out,type="stud",index=c(2,5))$student[4:5]
   MC.ci.b2[i,] <- boot.ci(boot.out,type="stud",index=c(3,6))$student[4:5]
