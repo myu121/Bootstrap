@@ -112,7 +112,7 @@ n_wild_bootstrap=function(n){
   #Average Length and Coverage Probability for bootstrap-t CI
   cat("Bootstrap-t CI", "\n")
   apply(Bt.Length,2,mean)
-  apply(Bt.Length,2,sd)
+  apply(Bt.Length,2,sd)/sqrt(M)
   length(which((Bt.L[,1]<beta[1])&(Bt.U[,1]>beta[1])))/M
   length(which((Bt.L[,2]<beta[2])&(Bt.U[,2]>beta[2])))/M
   length(which((Bt.L[,3]<beta[3])&(Bt.U[,3]>beta[3])))/M
