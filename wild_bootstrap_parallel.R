@@ -110,4 +110,4 @@ length(which((Bt.L[,1]<beta[1])&(Bt.U[,1]>beta[1])))/M
 length(which((Bt.L[,2]<beta[2])&(Bt.U[,2]>beta[2])))/M
 length(which((Bt.L[,3]<beta[3])&(Bt.U[,3]>beta[3])))/M
 
-write.csv(SD, file="SE_for_wild_bootstrap.csv")
+write.csv(SD, file="SE_for_wild_bootstrap_parallel.csv")
