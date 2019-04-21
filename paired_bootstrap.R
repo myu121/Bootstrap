@@ -6,8 +6,7 @@ n = 100
 boot_num = 1000
 beta <- c(1,1,1)
 qreg_fun <- function(df,ind){
-  exp_weight <- rexp(n)
-  fit <- summary(rq(y~x1+x2,tau=0.5,data=df[ind,],weights = exp_weight),se="nid")
+  fit <- summary(rq(y~x1+x2,tau=0.5,data=df[ind,]),se="nid")
   boot_coef = as.numeric(fit$coefficients[,1])
   boot_se = as.numeric(fit$coefficients[,2])
   return(c(boot_coef,boot_se))
