@@ -1,7 +1,7 @@
 library(quantreg)
 library(foreach)
 library(doParallel)
-set.seed(793)
+library(doRNG)
 
 #Probability Integral Transform for weight distribution
 finv=function(u){
@@ -76,7 +76,7 @@ wild_bootstrap=function(i){
 #Parallel Computing
 cl=makeCluster(detectCores()-1)
 registerDoParallel(cl)
-output<-foreach(i = 1:M,.combine = append, .packages = "quantreg") %dopar% wild_bootstrap(i)
+output<-foreach(i = 1:M,.combine = append,.options.RNG=793, .packages = "quantreg") %dorng% wild_bootstrap(i)
 stopCluster(cl)
 
 #Formalize results
