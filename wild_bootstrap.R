@@ -12,7 +12,7 @@ finv=function(u){
   return(w)
 }
 
-M=100         #MC-samples
+M=10000         #MC-samples
 B=1000        #Bootstrap replicates
 n=100         #sample size
 tau=0.5       #quantile level
@@ -98,3 +98,5 @@ apply(Bt.Length,2,mean)
 length(which((Bt.L[,1]<beta[1])&(Bt.U[,1]>beta[1])))/M
 length(which((Bt.L[,2]<beta[2])&(Bt.U[,2]>beta[2])))/M
 length(which((Bt.L[,3]<beta[3])&(Bt.U[,3]>beta[3])))/M
+
+write.csv(SD, file="SE_for_wild_bootstrap.csv")
