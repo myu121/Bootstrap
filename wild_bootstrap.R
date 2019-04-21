@@ -67,16 +67,16 @@ for (L in 1:M){
   
   #compute standard error
   sd=apply(Beta_star,2,sd)
-  #compute percentile CI and length
+  #compute bootstrap-t CI and length
   q_u=apply(Z_B,2,quantile,probs=alpha/2)
   q_l=apply(Z_B,2,quantile,probs=1-alpha/2)
-  per.L=beta_hat-q_l*sd
-  per.U=beta_hat-q_u*sd
-  per.length=(q_l-q_u)*sd
-  #compute bootstrap-t CI and length
-  bt.U=apply(Beta_star,2,quantile,probs=1-alpha/2)
-  bt.L=apply(Beta_star,2,quantile,probs=alpha/2)
-  bt.length=bt.U-bt.L
+  bt.L=beta_hat-q_l*sd
+  bt.U=beta_hat-q_u*sd
+  bt.length=(q_l-q_u)*sd
+  #compute percentile CI and length
+  per.U=apply(Beta_star,2,quantile,probs=1-alpha/2)
+  per.L=apply(Beta_star,2,quantile,probs=alpha/2)
+  per.length=per.U-per.L
   #bind results
   SD=rbind(SD,sd)
   Per.Length=rbind(Per.Length,per.length)
@@ -89,14 +89,17 @@ for (L in 1:M){
 
 #Average Length and Coverage Probability for percentile CI
 apply(Per.Length,2,mean)
+apply(Per.Length,2,sd)
 length(which((Per.L[,1]<beta[1])&(Per.U[,1]>beta[1])))/M
 length(which((Per.L[,2]<beta[2])&(Per.U[,2]>beta[2])))/M
 length(which((Per.L[,3]<beta[3])&(Per.U[,3]>beta[3])))/M
 
 #Average Length and Coverage Probability for bootstrap-t CI
 apply(Bt.Length,2,mean)
+apply(Bt.Length,2,sd)
 length(which((Bt.L[,1]<beta[1])&(Bt.U[,1]>beta[1])))/M
 length(which((Bt.L[,2]<beta[2])&(Bt.U[,2]>beta[2])))/M
 length(which((Bt.L[,3]<beta[3])&(Bt.U[,3]>beta[3])))/M
 
+#Save estimated standard error
 write.csv(SD, file="SE_for_wild_bootstrap.csv")
