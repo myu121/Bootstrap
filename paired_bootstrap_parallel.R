@@ -2,7 +2,7 @@ library(foreach)
 library(parallel)
 library(doParallel)
 library(tictoc)
-set.seed(793)
+library(doRNG)
 cl <-makeCluster(detectCores())
 registerDoParallel(cl)
 MC_num = 10000
@@ -10,13 +10,16 @@ n = 100
 boot_num = 1000
 beta <- c(1,1,1)
 qreg_fun <- function(df,ind){
+  while(sum(df[ind,]$x2==1) == n){
+    ind = sample(ind,replace=TRUE)
+  }
   fit <- summary(rq(y~x1+x2,tau=0.5,data=df[ind,]),se="nid")
   boot_coef = as.numeric(fit$coefficients[,1])
   boot_se = as.numeric(fit$coefficients[,2])
   return(c(boot_coef,boot_se))
 }
 tic("Paired Bootstrap")
-output<-foreach(i = 1:MC_num,.combine = append, .packages = c("parallel","doParallel","boot","quantreg")) %dopar%{
+output<-foreach(i = 1:MC_num,.combine = append, .options.RNG=793,.packages = c("parallel","doParallel","boot","quantreg")) %dorng%{
   x1 <- rlnorm(n)
   x2 <- c(rep(1,n*0.8),rep(0,n*0.2))
   y <- numeric(n)
@@ -52,8 +55,9 @@ for(i in 1:MC_num){
   if((output[[i]]$Boot.t.b1[1]<beta[2])&&(output[[i]]$Boot.t.b1[2]>beta[2])) coverage.prob[5]=coverage.prob[5]+1
   if((output[[i]]$Boot.t.b2[1]<beta[3])&&(output[[i]]$Boot.t.b2[2]>beta[3])) coverage.prob[6]=coverage.prob[6]+1
 }
+Coverage = coverage.prob/MC_num
 cat("The coverage probablities for the 90% confidence intervals are:","\n")
-coverage.prob/MC_num
+Coverage
 ci.out = matrix(0,ncol=12,nrow=MC_num)
 for(i in 1:MC_num){
   ci.out[i,1] = output[[i]]$Per.b0[1]
@@ -80,3 +84,5 @@ colnames(summary.out)=c("NP.b0","NP.b1","NP.b2","BT.b0","BT.b1","BT.b2")
 rownames(summary.out)=c("Average","SD")
 cat("The means and standard deviations of the 90% confidence intervals are:","\n")
 summary.out
+sim.out <- rbind(Coverage,summary.out)
+save(sim.out,file="Paired_Bootstrap_MC.rda")
