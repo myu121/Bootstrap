@@ -52,7 +52,7 @@ for(i in 1:MC_num){
   if((output[[i]]$Boot.t.b1[1]<beta[2])&&(output[[i]]$Boot.t.b1[2]>beta[2])) coverage.prob[5]=coverage.prob[5]+1
   if((output[[i]]$Boot.t.b2[1]<beta[3])&&(output[[i]]$Boot.t.b2[2]>beta[3])) coverage.prob[6]=coverage.prob[6]+1
 }
-cat("The coverage probablities for the 90% confidence intervals are:")
+cat("The coverage probablities for the 90% confidence intervals are:","\n")
 coverage.prob/MC_num
 ci.out = matrix(0,ncol=12,nrow=MC_num)
 for(i in 1:MC_num){
@@ -76,7 +76,7 @@ for(i in 1:6){
 ave.length.out = colMeans(length.out)
 sd.length.out = apply(length.out,2,sd)
 summary.out = rbind(ave.length.out,sd.length.out)
-cat("The means and standard deviations of the 90% confidence intervals are:")
+cat("The means and standard deviations of the 90% confidence intervals are:","\n")
 colnames(summary.out)=c("NP.b0","NP.b1","NP.b2","BT.b0","BT.b1","BT.b2")
 rownames(summary.out)=c("Average","SD")
 summary.out
