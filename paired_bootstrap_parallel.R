@@ -51,8 +51,8 @@ for(m in 1:5){
   names(coverage.prob)=c("NP.b0","NP.b1","NP.b2","BT.b0","BT.b1","BT.b2")
   for(i in 1:MC_num){
     if((output[[i]]$Per.b0[1]<beta[1])&&(output[[i]]$Per.b0[2]>beta[1])) coverage.prob[1]=coverage.prob[1]+1
-    if((output[[i]]$Per.b1[1]<beta[2])&&(output[[i]]$Boot.t.b1[2]>beta[2])) coverage.prob[2]=coverage.prob[2]+1
-    if((output[[i]]$Per.b2[1]<beta[3])&&(output[[i]]$Boot.t.b2[2]>beta[3])) coverage.prob[3]=coverage.prob[3]+1
+    if((output[[i]]$Per.b1[1]<beta[2])&&(output[[i]]$Per.b1[2]>beta[2])) coverage.prob[2]=coverage.prob[2]+1
+    if((output[[i]]$Per.b2[1]<beta[3])&&(output[[i]]$Per.b2[2]>beta[3])) coverage.prob[3]=coverage.prob[3]+1
     if((output[[i]]$Boot.t.b0[1]<beta[1])&&(output[[i]]$Boot.t.b0[2]>beta[1])) coverage.prob[4]=coverage.prob[4]+1
     if((output[[i]]$Boot.t.b1[1]<beta[2])&&(output[[i]]$Boot.t.b1[2]>beta[2])) coverage.prob[5]=coverage.prob[5]+1
     if((output[[i]]$Boot.t.b2[1]<beta[3])&&(output[[i]]$Boot.t.b2[2]>beta[3])) coverage.prob[6]=coverage.prob[6]+1
