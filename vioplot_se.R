@@ -5,6 +5,9 @@ library(vioplot)
 b0.sd.true = 1.21
 b1.sd.true = 0.28
 b2.sd.true = 1.18
+#b0.sd.true = 0.66     (tau=0.9)
+#b1.sd.true = 0.125
+#b2.sd.true = 0.66
 wb1.se = read.csv("SE1.csv")[,-1]
 wb2.se = read.csv("SE2.csv")[,-1]
 rw.se = read.csv("rw_se.csv")
