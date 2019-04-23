@@ -1,5 +1,6 @@
 library(boot)
 library(quantreg)
+#seed for hard fitting 35
 set.seed(793)
 MC_num = 10000
 n = 100
