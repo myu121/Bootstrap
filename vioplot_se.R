@@ -1,3 +1,7 @@
+library(ggplot2)
+library(Cairo)
+library(gridExtra)
+library(vioplot)
 b0.sd.true = 1.21
 b1.sd.true = 0.28
 b2.sd.true = 1.18
@@ -17,25 +21,41 @@ b0.ratio <- data.frame(b0.ratio, LM = lm.se[,1], ND = nd.se[,1])
 b1.ratio <- data.frame(b1.ratio, LM = lm.se[,2], ND = nd.se[,2])
 b2.ratio <- data.frame(b2.ratio, LM = lm.se[,3], ND = nd.se[,3])
 cbp1 <- c("#999999","#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
-library(ggplot2)
+
 b0.name <- c(rep("WB+G",100),rep("WB+PM",100),rep("PB",100),rep("RW",100),rep("LM",100),rep("ND",100))
 b0.name <- factor(b0.name,levels = c("WB+G","WB+PM","PB","RW","LM","ND"))
-                  
-b0.gg.df <- data.frame(name=b0.name,se=c(b0.ratio[,1],b0.ratio[,2],b0.ratio[,3],b0.ratio[,4],b0.ratio[,5],b0.ratio[,6]))
-ggplot(data = b0.gg.df,aes(x=name,y=se))+scale_alpha(guide = 'none')+ylim(0,3)+
-  geom_violin(trim=TRUE,alpha=0.5,aes(fill=name),lwd=1)+geom_boxplot(width=0.1,lwd=1)+scale_color_manual(values = cbp1) + geom_hline(yintercept = 1,linetype=2)+
-  theme_bw()+xlab("Method")+ylab("Standard Error")+ggtitle("Variance Estimation of QR Estimators")
+
+b0.gg.df <- data.frame(Method=b0.name,se=c(b0.ratio[,1],b0.ratio[,2],b0.ratio[,3],b0.ratio[,4],b0.ratio[,5],b0.ratio[,6]))
+p1<-ggplot(data = b0.gg.df,aes(x=Method,y=se))+scale_alpha(guide = 'none')+ylim(0,3.5)+
+  geom_violin(trim=TRUE,alpha=0.5,aes(fill=Method))+geom_boxplot(width=0.1)+scale_color_manual(values = cbp1) + geom_hline(yintercept = 1,linetype=2)+
+  theme_bw()+labs(x="Method",y="SE Ratio",title=TeX('$\\hat{\\beta}_0(0.5)$'))+ 
+  guides(fill="none")+theme(axis.text=element_text(size=15),plot.title = element_text(hjust = 0.5,size=20),axis.title=element_text(size=15,face="bold"))
 
 
-b1.gg.df <- data.frame(name=b0.name,se=c(b1.ratio[,1],b1.ratio[,2],b1.ratio[,3],b1.ratio[,4],b1.ratio[,5],b1.ratio[,6]))
-ggplot(data = b1.gg.df,aes(x=name,y=se))+scale_alpha(guide = 'none')+ylim(0,4)+
-  geom_violin(trim=TRUE,alpha=0.5,aes(fill=name),lwd=1)+geom_boxplot(width=0.1,lwd=1)+scale_color_manual(values = cbp1) + geom_hline(yintercept = 1,linetype=2)+
-  theme_bw()+xlab("Method")+ylab("Standard Error")+ggtitle("Variance Estimation of QR Estimators")
+b1.gg.df <- data.frame(Method=b0.name,se=c(b1.ratio[,1],b1.ratio[,2],b1.ratio[,3],b1.ratio[,4],b1.ratio[,5],b1.ratio[,6]))
+p2<-ggplot(data = b1.gg.df,aes(x=Method,y=se))+scale_alpha(guide = 'none')+ylim(0,3.5)+
+  geom_violin(trim=TRUE,alpha=0.5,aes(fill=Method))+geom_boxplot(width=0.1)+scale_color_manual(values = cbp1) + geom_hline(yintercept = 1,linetype=2)+
+  theme_bw()+labs(x="Method",y="SE Ratio",title=TeX('$\\hat{\\beta}_1(0.5)$'))+ 
+  guides(fill="none")+theme(axis.text=element_text(size=15),plot.title = element_text(hjust = 0.5,size=20),axis.title=element_text(size=15,face="bold"))
 
 
-b2.gg.df <- data.frame(name=b0.name,se=c(b2.ratio[,1],b2.ratio[,2],b2.ratio[,3],b2.ratio[,4],b2.ratio[,5],b2.ratio[,6]))
-ggplot(data = b2.gg.df,aes(x=name,y=se))+scale_alpha(guide = 'none')+ylim(0,3)+
-  geom_violin(trim=TRUE,alpha=0.5,aes(fill=name),lwd=1)+geom_boxplot(width=0.1,lwd=1)+scale_color_manual(values = cbp1) + geom_hline(yintercept = 1,linetype=2)+
-  theme_bw()+xlab("Method")+ylab("Standard Error")+ggtitle("Variance Estimation of QR Estimators")
+b2.gg.df <- data.frame(Method=b0.name,se=c(b2.ratio[,1],b2.ratio[,2],b2.ratio[,3],b2.ratio[,4],b2.ratio[,5],b2.ratio[,6]))
+p3<-ggplot(data = b2.gg.df,aes(x=Method,y=se))+scale_alpha(guide = 'none')+ylim(0,3.5)+
+  geom_violin(trim=TRUE,alpha=0.5,aes(fill=Method))+geom_boxplot(width=0.1)+scale_color_manual(values = cbp1) + geom_hline(yintercept = 1,linetype=2)+
+  theme_bw()+labs(x="Method",y="SE Ratio",title=TeX('$\\hat{\\beta}_2(0.5)$'))+ 
+  guides(fill="none")+theme(axis.text=element_text(size=15),plot.title = element_text(hjust = 0.5,size=20),axis.title=element_text(size=15,face="bold"))
 
 
+
+Cairo(file="se_comparison.png", 
+      type="png",
+      width=640,height=1280,pointsize = 14*1.3,dpi=72*1.3)
+grid.arrange(p1, p2,p3, ncol=1)
+dev.off()
+
+
+Cairo(file="se_comparison_t.png", 
+      type="png",
+      width=1720,height=480,pointsize = 14*1.3,dpi=72*1.3)
+grid.arrange(p1, p2,p3, ncol=3)
+dev.off()
