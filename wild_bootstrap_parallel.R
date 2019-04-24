@@ -45,7 +45,7 @@ wild_bootstrap=function(i){
     w=sapply(u,finv)
     estar=w*abs(ehat)
     ystar=X%*%beta_hat+estar
-    fit_star=rq(ystar~x1+x2, tau=0.5)
+    fit_star=rq(ystar~x1+x2, tau=tau)
     beta_star=fit_star$coefficients
     Beta_star=rbind(Beta_star, beta_star)
     se_b=summary(fit_star, se="nid")$coefficients[,2]
