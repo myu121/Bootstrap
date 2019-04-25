@@ -62,3 +62,29 @@ Cairo(file="se_comparison_t.png",
       width=1720,height=480,pointsize = 14*1.3,dpi=72*1.3)
 grid.arrange(p1, p2,p3, ncol=3)
 dev.off()
+
+
+ci.coverage <- read.csv("CI_cov_com.csv")
+ci.df <- data.frame(n=as.numeric(ci.coverage[,1]),b0=ci.coverage$b0,b1=ci.coverage$b1,b2=ci.coverage$b2,Method=ci.coverage$Method)
+p4<-ggplot(data=ci.df,aes(x=n,y=b0))+geom_line(aes(color=Method,linetype=Method,alpha=0.9),lwd=1.2)+
+  scale_linetype_manual(values=c(rep("solid",5),"dashed","dashed"))+
+  geom_hline(yintercept=0.9,linetype="twodash",lwd=1.2,alpha=0.5)+scale_alpha(guide = 'none')+labs(x="Sample Size",y="Coverage")+
+  theme(axis.text=element_text(size=15),axis.title=element_text(size=15,face="bold"))
+p4
+p5<-ggplot(data=ci.df,aes(x=n,y=b1))+geom_line(aes(color=Method,linetype=Method,alpha=0.9),lwd=1.2)+
+  scale_linetype_manual(values=c(rep("solid",5),"dashed","dashed"))+
+  geom_hline(yintercept=0.9,linetype="twodash",lwd=1.2,alpha=0.5)+scale_alpha(guide = 'none')+labs(x="Sample Size",y="Coverage")+
+  theme(axis.text=element_text(size=15),axis.title=element_text(size=15,face="bold"))
+p5
+p6<-ggplot(data=ci.df,aes(x=n,y=b2))+geom_line(aes(color=Method,linetype=Method,alpha=0.9),lwd=1.2)+
+  scale_linetype_manual(values=c(rep("solid",5),"dashed","dashed"))+
+  geom_hline(yintercept=0.9,linetype="twodash",lwd=1.2,alpha=0.5)+scale_alpha(guide = 'none')+labs(x="Sample Size",y="Coverage")+
+  theme(axis.text=element_text(size=15),axis.title=element_text(size=15,face="bold"))
+p6
+
+
+Cairo(file="coverage_trend_b2.png", 
+      type="png",
+      width=840,height=360,pointsize = 14*1.3,dpi=72*1.3)
+p6
+dev.off()
